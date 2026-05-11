@@ -1,0 +1,36 @@
+name: project
+description: Standard analysis project
+
+common:
+  files:
+    - { src: supporting/aggressive_gitignore.md, dst: .gitignore }
+    - { src: supporting/README.md, dst: README.md }
+  actions:
+    - { type: create_dir, path: data }
+    - { type: download_csl }
+    - { type: create_bib }
+
+variants:
+  quarto_example:
+    when: { format: quarto, example: true }
+    files:
+      - { src: analysis/analysis_qmd_with_example.qmd, dst: analysis.qmd }
+    actions:
+      - { type: write_scss }
+
+  quarto:
+    when: { format: quarto, example: false }
+    files:
+      - { src: analysis/analysis_qmd_wo_example.qmd, dst: analysis.qmd }
+    actions:
+      - { type: write_scss }
+
+  rmd_example:
+    when: { format: rmd, example: true }
+    files:
+      - { src: analysis/analysis_rmd_with_example.Rmd, dst: analysis.Rmd }
+
+  rmd:
+    when: { format: rmd, example: false }
+    files:
+      - { src: analysis/analysis_rmd_wo_example.Rmd, dst: analysis.Rmd }

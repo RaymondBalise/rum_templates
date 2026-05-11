@@ -1,0 +1,24 @@
+name: quarto_standalone
+description: Single Quarto document via write_quarto()
+
+variants:
+  default:
+    when: { example: null }
+    files:
+      - { src: analysis/default_quarto.qmd, dst: "{filename}" }
+
+  example:
+    when: { example: true }
+    files:
+      - { src: analysis/analysis_qmd_with_example.qmd, dst: "{filename}" }
+    actions:
+      - { type: download_csl }
+      - { type: create_bib }
+
+  no_example:
+    when: { example: false }
+    files:
+      - { src: analysis/analysis_qmd_wo_example.qmd, dst: "{filename}" }
+    actions:
+      - { type: download_csl }
+      - { type: create_bib }

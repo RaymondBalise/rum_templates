@@ -1,0 +1,45 @@
+name: slides
+description: Revealjs slide decks
+
+common:
+  files:
+    - { src: styling/rstudio_default-light.theme, dst: "{path}/rstudio_default-light.theme" }
+  actions:
+    - { type: create_dir, path: "{path}" }
+
+variants:
+  default:
+    when: { template: none, example: false }
+    files:
+      - { src: slides/quarto_slides.qmd, dst: "{path}/presentation.qmd" }
+      - { src: styling/slides.scss, dst: "{path}/slides.scss" }
+
+  miami:
+    when: { template: miami, example: false }
+    files:
+      - { src: slides/quarto_slides_miami.qmd, dst: "{path}/presentation.qmd" }
+      - { src: styling/custom_miami.scss, dst: "{path}/slides.scss" }
+
+  miami_example:
+    when: { template: miami, example: true }
+    files:
+      - { src: slides/quarto_slides_example_miami.qmd, dst: "{path}/presentation.qmd" }
+      - { src: styling/custom_miami.scss, dst: "{path}/slides.scss" }
+
+  rmed:
+    when: { template: rmed, example: false }
+    files:
+      - { src: slides/quarto_slides_rmed.qmd, dst: "{path}/presentation.qmd" }
+      - { src: styling/slides_example_rmed.scss, dst: "{path}/slides.scss" }
+      - { src: styling/clean_title_page.html, dst: "{path}/img/clean_title_page.html" }
+    actions:
+      - { type: download_rmed_artwork, path: "{path}/img" }
+
+  rmed_example:
+    when: { template: rmed, example: true }
+    files:
+      - { src: slides/quarto_slides_example_rmed.qmd, dst: "{path}/presentation.qmd" }
+      - { src: styling/slides_example_rmed.scss, dst: "{path}/slides.scss" }
+      - { src: styling/clean_title_page.html, dst: "{path}/img/clean_title_page.html" }
+    actions:
+      - { type: download_rmed_artwork, path: "{path}/img" }

@@ -1,0 +1,43 @@
+name: package
+description: R package with vignette manuscript
+
+common:
+  files:
+    - { src: supporting/aggressive_gitignore.md, dst: .gitignore }
+    - { src: supporting/README.md, dst: README.md }
+  actions:
+    - { type: create_dir, path: data }
+    - { type: create_dir, path: vignettes }
+    - { type: download_csl, path: vignettes }
+    - { type: create_bib, path: vignettes }
+    - { type: build_description }
+    - { type: write_vignettes_gitignore }
+
+variants:
+  quarto_example:
+    when: { format: quarto, example: true }
+    files:
+      - { src: analysis/analysis_qmd_vignette_with_example.qmd, dst: vignettes/analysis.qmd }
+    metadata:
+      vignette_builder: quarto
+
+  quarto:
+    when: { format: quarto, example: false }
+    files:
+      - { src: analysis/analysis_qmd_vignette_wo_example.qmd, dst: vignettes/analysis.qmd }
+    metadata:
+      vignette_builder: quarto
+
+  rmd_example:
+    when: { format: rmd, example: true }
+    files:
+      - { src: analysis/analysis_rmd_vignette_with_example.Rmd, dst: vignettes/analysis.Rmd }
+    metadata:
+      vignette_builder: knitr
+
+  rmd:
+    when: { format: rmd, example: false }
+    files:
+      - { src: analysis/analysis_rmd_vignette_wo_example.Rmd, dst: vignettes/analysis.Rmd }
+    metadata:
+      vignette_builder: knitr
