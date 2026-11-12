@@ -3,41 +3,57 @@ description: R package with vignette manuscript
 
 common:
   files:
-    - { src: supporting/aggressive_gitignore.md, dst: .gitignore }
-    - { src: supporting/README.md, dst: README.md }
+    - { src: supporting/.gitignore.md, dst: .gitignore }
+    - { src: supporting/vignettes_gitignore.md, dst: vignettes/.gitignore }
+    - { src: supporting/apa.csl, dst: vignettes/bib/apa.csl }
+    - { src: supporting/mla.csl, dst: vignettes/bib/mla.csl }
+    - src: supporting/the-new-england-journal-of-medicine.csl
+      dst: vignettes/bib/the-new-england-journal-of-medicine.csl
+    - src: supporting/inst/scripts/libraries.R
+      dst: inst/scripts/libraries.R
+    - src: supporting/inst/scripts/do_everything.R
+      dst: inst/scripts/do_everything.R
+    - { src: supporting/agents/AGENTS_package.md, dst: AGENTS.md }
+    - { src: supporting/agents/CLAUDE.md, dst: CLAUDE.md }
+    - { src: supporting/agents/GEMINI.md, dst: GEMINI.md }
+    - src: supporting/agents/skills/rum-workflow-package/SKILL.md
+      dst: .agents/skills/rum-workflow/SKILL.md
+    - src: supporting/agents/skills/rum-devlog/SKILL.md
+      dst: .agents/skills/rum-devlog/SKILL.md
+    - src: supporting/agents/skills/rum-commit/SKILL.md
+      dst: .agents/skills/rum-commit/SKILL.md
   actions:
-    - { type: create_dir, path: data }
+    - { type: create_dir, path: inst/extdata }
     - { type: create_dir, path: vignettes }
-    - { type: download_csl, path: vignettes }
-    - { type: create_bib, path: vignettes }
+    - { type: write_readme }
+    - { type: create_bib, path: vignettes/bib }
     - { type: build_description }
-    - { type: write_vignettes_gitignore }
 
 variants:
   quarto_example:
     when: { format: quarto, example: true }
     files:
-      - { src: analysis/analysis_qmd_vignette_with_example.qmd, dst: vignettes/analysis.qmd }
-    metadata:
-      vignette_builder: quarto
+      - src: analysis/analysis_qmd_vignette_with_example.qmd
+        dst: vignettes/analysis.qmd
+        inject: { knitr_opts: supporting/partials/knitr_analysis.yml }
 
   quarto:
     when: { format: quarto, example: false }
     files:
-      - { src: analysis/analysis_qmd_vignette_wo_example.qmd, dst: vignettes/analysis.qmd }
-    metadata:
-      vignette_builder: quarto
+      - src: analysis/analysis_qmd_vignette_wo_example.qmd
+        dst: vignettes/analysis.qmd
+        inject: { knitr_opts: supporting/partials/knitr_analysis.yml }
 
   rmd_example:
     when: { format: rmd, example: true }
     files:
-      - { src: analysis/analysis_rmd_vignette_with_example.Rmd, dst: vignettes/analysis.Rmd }
-    metadata:
-      vignette_builder: knitr
+      - src: analysis/analysis_rmd_vignette_with_example.Rmd
+        dst: vignettes/analysis.Rmd
+        inject: { knitr_opts: supporting/partials/knitr_rmd.Rmd }
 
   rmd:
     when: { format: rmd, example: false }
     files:
-      - { src: analysis/analysis_rmd_vignette_wo_example.Rmd, dst: vignettes/analysis.Rmd }
-    metadata:
-      vignette_builder: knitr
+      - src: analysis/analysis_rmd_vignette_wo_example.Rmd
+        dst: vignettes/analysis.Rmd
+        inject: { knitr_opts: supporting/partials/knitr_rmd.Rmd }

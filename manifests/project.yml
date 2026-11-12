@@ -3,34 +3,54 @@ description: Standard analysis project
 
 common:
   files:
-    - { src: supporting/aggressive_gitignore.md, dst: .gitignore }
-    - { src: supporting/README.md, dst: README.md }
+    - { src: supporting/.gitignore.md, dst: .gitignore }
+    - { src: supporting/apa.csl, dst: bib/apa.csl }
+    - { src: supporting/mla.csl, dst: bib/mla.csl }
+    - src: supporting/the-new-england-journal-of-medicine.csl
+      dst: bib/the-new-england-journal-of-medicine.csl
+    - { src: supporting/agents/AGENTS_project.md, dst: AGENTS.md }
+    - { src: supporting/agents/CLAUDE.md, dst: CLAUDE.md }
+    - { src: supporting/agents/GEMINI.md, dst: GEMINI.md }
+    - src: supporting/agents/skills/rum-workflow-project/SKILL.md
+      dst: .agents/skills/rum-workflow/SKILL.md
+    - src: supporting/agents/skills/rum-devlog/SKILL.md
+      dst: .agents/skills/rum-devlog/SKILL.md
+    - src: supporting/agents/skills/rum-commit/SKILL.md
+      dst: .agents/skills/rum-commit/SKILL.md
   actions:
     - { type: create_dir, path: data }
-    - { type: download_csl }
-    - { type: create_bib }
+    - { type: write_readme }
+    - { type: create_bib, path: bib }
 
 variants:
   quarto_example:
     when: { format: quarto, example: true }
     files:
-      - { src: analysis/analysis_qmd_with_example.qmd, dst: analysis.qmd }
+      - src: analysis/analysis_qmd_with_example.qmd
+        dst: analysis.qmd
+        inject: { knitr_opts: supporting/partials/knitr_analysis.yml }
     actions:
       - { type: write_scss }
 
   quarto:
     when: { format: quarto, example: false }
     files:
-      - { src: analysis/analysis_qmd_wo_example.qmd, dst: analysis.qmd }
+      - src: analysis/analysis_qmd_wo_example.qmd
+        dst: analysis.qmd
+        inject: { knitr_opts: supporting/partials/knitr_analysis.yml }
     actions:
       - { type: write_scss }
 
   rmd_example:
     when: { format: rmd, example: true }
     files:
-      - { src: analysis/analysis_rmd_with_example.Rmd, dst: analysis.Rmd }
+      - src: analysis/analysis_rmd_with_example.Rmd
+        dst: analysis.Rmd
+        inject: { knitr_opts: supporting/partials/knitr_rmd.Rmd }
 
   rmd:
     when: { format: rmd, example: false }
     files:
-      - { src: analysis/analysis_rmd_wo_example.Rmd, dst: analysis.Rmd }
+      - src: analysis/analysis_rmd_wo_example.Rmd
+        dst: analysis.Rmd
+        inject: { knitr_opts: supporting/partials/knitr_rmd.Rmd }

@@ -101,6 +101,11 @@ rsconnect/
 # sas data
 *.sas7bdat
 *.sas7bcat
+*.sas7bndx
+*.xpt
+*.sd2
+*.sd7
+*.ssd*
 
 # SPSS data
 *.sav
@@ -132,6 +137,7 @@ rsconnect/
 *.msgpack
 *.parquet
 *.feather
+*.arrow
 
 # VSC
 www/.vscode/
@@ -159,14 +165,16 @@ _bookdown_files/
 .quarto/
 _site/
 
-!inst/gists/clean_title_page.html
+!styling/clean_title_page.html
+!styling/**/*.html
 
 # Render pkgdown site from gh-pages
 docs/
 
 
-# AI & LLM
-.claude
-CLAUDE.md
-.gemini
-GEMINI.md
+# AI & LLM runtime directories (instruction files are tracked)
+/.claude
+/.gemini
+!AGENTS.md
+!CLAUDE.md
+!GEMINI.md

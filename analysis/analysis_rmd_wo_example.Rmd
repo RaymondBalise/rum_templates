@@ -5,27 +5,12 @@ date: "`r Sys.Date()`"
 output:
   bookdown::html_document2:
     number_sections: false
-bibliography: [references.bib, packages.bib]
-csl: the-new-england-journal-of-medicine.csl
+bibliography: [bib/references.bib, bib/packages.bib]
+csl: bib/apa.csl # keep the bib/ prefix (e.g., bib/mla.csl)
+template-version: 1
 ---
 
-```{r setup, echo=FALSE}
-knitr::opts_chunk$set(
-                      ########## set global options ############
-    echo = FALSE,     # don't show code
-    collapse = TRUE,  # keep code from blocks together (if shown)
-    message = TRUE,   # show messages
-    warning = TRUE,   # show warnings
-    error = TRUE,     # show error messages
-    comment = "",     # don't show ## with printed output
-    dpi = 100,        # image resolution (typically 300 for publication)
-    fig.width = 6.5,  # figure width
-    fig.height = 4.0  # figure height
-)
-
-# R's default rounding is to show 7 digits. This rounds results to 3 digits.
-options(digits = 3)
-```
+{{knitr_opts}}
 
 ```{r tidyverse-tidymodels, echo=FALSE}
 library(conflicted)
@@ -38,17 +23,20 @@ options(dplyr.summarise.inform = FALSE)
 ```
 
 ```{r other-packages}
-library(glue)  # for glue()
-library(rUM)  # needed for the bibliography to include the package
-library(rio)  # for import() 
-library(table1)  # for table1() if you want to use it instead of gtsummary
+if (requireNamespace("arrow", quietly = TRUE)) {
+  suppressPackageStartupMessages(library(arrow)) # for arrow/parquet I/O
+}
+library(glue) # for glue()
+library(rUM) # needed for the bibliography to include the package
+library(rio) # for import()
+library(table1) # for table1() if you want to use it instead of gtsummary
 
 # gtsummary for tbl_summary(), add_n(), add_p(), modify_header(), bold_labels()
-suppressPackageStartupMessages(library(gtsummary)) 
+suppressPackageStartupMessages(library(gtsummary))
 ```
 
 ```{r load-data}
-# raw_data <- import("")  # your data file goes inside the ""
+# raw_data <- import("") # your data file goes inside the ""
 ```
 
 ```{r make-analysis}
@@ -61,20 +49,27 @@ suppressPackageStartupMessages(library(gtsummary))
 # Introduction
 
 # Methods
-Analyses were conducted with `r stringr::word(R.Version()$version.string, 1, 3)` with the `tidyverse` (`r packageVersion("tidyverse")`), `rUM` (`r packageVersion("rUM")`), `gtsummary` (`r packageVersion("gtsummary")`) packages used to preprocess and summarize data. [@R-base; @R-tidyverse; @tidyverse2019; @R-rUM; @R-gtsummary]
+Analyses were conducted with `r stringr::word(R.Version()$version.string, 1, 3)`
+with the `tidyverse` (`r packageVersion("tidyverse")`), `rUM`
+(`r packageVersion("rUM")`), and `gtsummary` (`r packageVersion("gtsummary")`)
+packages used to preprocess and summarize data.
+[@R-base; @R-tidyverse; @tidyverse2019; @R-rUM; @R-gtsummary]
 
 # Results
 
 ```{r table-1}
-
+knitr::kable(
+  tibble(Placeholder = "Replace with your table"),
+  caption = "Cross references to tables start with tab: then the chunk label."
+)
 ```
 
 As can be seen in Table \@ref(tab:table-1) or [Table 1](#tab:table-1)
 
 ```{r figure1}
-#| fig.cap: "Remember figure references begin with #fig:"
+#| fig.cap: "Remember figure references use fig: plus the chunk label."
 
-
+ggplot()
 ```
 
 See Figure \@ref(fig:figure1) or [Figure 1](#fig:figure1)
@@ -86,11 +81,17 @@ See Figure \@ref(fig:figure1) or [Figure 1](#fig:figure1)
 
 ```{r make-references, include=FALSE}
 # automatically create a bib database for loaded R packages & rUM
-knitr::write_bib(
-  c(
-    .packages(),
-    "rUM"
-  ),
-  "packages.bib"
-)
+bib_pkgs <- c(.packages(), "rUM")
+if (file.exists("bib/packages.bib")) {
+  old_pkgs <- stringr::str_match(
+    readLines("bib/packages.bib", warn = FALSE),
+    "^@Manual[{]R-([^,]+),"
+  )[, 2]
+  old_pkgs <- stats::na.omit(old_pkgs)
+  old_pkgs <- old_pkgs[
+    vapply(old_pkgs, requireNamespace, logical(1), quietly = TRUE)
+  ]
+  bib_pkgs <- unique(c(bib_pkgs, old_pkgs))
+}
+knitr::write_bib(bib_pkgs, "bib/packages.bib")
 ```

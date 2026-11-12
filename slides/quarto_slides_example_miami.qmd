@@ -8,8 +8,9 @@ date: last-modified
 date-format: "MMMM D, YYYY"
 format: 
   revealjs:
+    link-external-newwindow: true
+    link-external-icon: false  # true = show icon next to external links
     theme: [default, slides.scss]
-    slideNumber: true
     fontsize: 2em
     html-math-method: mathjax
     slide-number: c/t
@@ -20,19 +21,11 @@ format:
     pdf-max-pages-per-slide: 1
     pdf-separate-fragments: true
 embed-resources: true   # true = a single file, false = multiple files
-knitr:
-  opts_chunk:      ########## set global options ############
-    collapse: true # keep code from blocks together (if shown)
-    echo: true     # don't show code
-    message: true  # show messages
-    warning: true  # show warnings
-    error: true    # show error messages
-    comment: ""    # don't show ## with printed output
-    R.options:   
-      digits: 3    # round to three digits
+{{knitr_opts}}
 editor_options:
   chunk_output_type: console
 editor: source
+template-version: 1
 ---
  
 # Introduction
@@ -72,7 +65,7 @@ library(knitr)
 + Big Things... You can make:
 + Less Big Things...  You can add:
   + A README file with `write_readme()`
-  + A progress notes with `write_notes()`
+  + A Quarto document with `write_quarto()`
   + A scss style template with `write_scss()`
   + A manual page for a data set `write_man()`
 + Sorta Big Things... You can:
@@ -83,9 +76,9 @@ library(knitr)
 + Big Things... You can make:
 + Less Big Things...  You can add:
 + Sorta Big Things... You can:
-  + Add a slide deck with write_slides
+  + Add a slide deck with `write_slides()`
     + Into a folder
-    + into a package
+    + Into a package
   + Find slides in a package with `find_slides()`
   + Display slides from a package with `show_slides()`
 
@@ -99,7 +92,7 @@ library(rUM)
 rUM::find_slides("rUM")
 ```
 
-You can display all parts of a code bock using {{r}}
+You can display all parts of a code block using {{r}}
 ```{{r}}
 #| eval: false
 #| echo: true

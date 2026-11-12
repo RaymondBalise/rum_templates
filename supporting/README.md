@@ -2,38 +2,43 @@
 
 **PI**: add contact info if the repo is private.
 
-**Code Authors**: 
+**Code Authors**:
 
-**Description**: Follow the name with a *brief* description of what the project does.  Say the source of the data. If the data is public add reference here.
+**Description**: Follow the name with a *brief* description of what the project
+does. State the source of the data. If the data is public, add a reference here.
 
-**Notes**: The progress notes are here [dated_progress_notes.md](dated_progress_notes.md).
+**Notes**: When logging analytical decisions or project milestones, record them
+in `DECISIONS.md` and `CHANGELOG.md` (or `NEWS.md` for R packages).
 
 ## Run Me First
 
-Include the packages needed.  Consider using either `remotes` or `pak`
+Include the packages needed. Consider using either `remotes` or `pak`:
 
 ```r
 install.packages("remotes")
 
 remotes::install_cran(
-  c("conflicted", "tidyverse", "tidymodels", "knitr", "tidyREDCap")
+  c(
+    "arrow", "conflicted", "gtsummary", "here", "knitr",
+    "rio", "rUM", "tidymodels", "tidyREDCap", "tidyverse"
+  )
 )
 # remotes::install_github()
 ```
 
 ## Raw Data
 
-The names of each raw file with a brief descriptions 
+The names of each raw file with a brief description:
 
-`file_name`:  what the is file
+`file_name`: what is in the file
 
 ## Directories
 
 `path`: what goes in the directory
 
-## Ordered Analysis Pipeline/ Workflow
+## Ordered Analysis Pipeline / Workflow
 
-Run these file in order from raw processing to publication.
+Run these files in order from raw processing to publication:
 
 1.
 2.
@@ -41,9 +46,11 @@ Run these file in order from raw processing to publication.
 
 ## Other Files
 
-**Data**: Include enough information to trace the data to its origin.  This may be URLs or emails (with who sent it and who received it on what date).
+**Data**: Include enough information to trace the data to its origin. This may
+be URLs or emails (with who sent it and who received it on what date).
 
-**Preprocessing/Anonymization**: 
-If the project began with confidential data, include the **paths** to the code that processed the sensitive data here.
+**Preprocessing/Anonymization**:
+If the project began with confidential data, include the **paths** to the code
+that processed the sensitive data here.
 
-**Miscellaneous**: Things like .ccs, .csl, .bib, .js, .sass files.
+**Miscellaneous**: Things like `.css`, `.scss`, `.csl`, `.bib`, or `.js` files.

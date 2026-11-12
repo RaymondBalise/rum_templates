@@ -1,0 +1,13 @@
+knitr:
+  opts_chunk:        ########## set global options ############
+    collapse: true   # keep code from blocks together (if shown)
+    echo: false      # don't show code
+    message: true    # show messages
+    warning: true    # show warnings
+    error: true      # show error messages
+    comment: ""      # don't show ## with printed output
+    dpi: 100         # image resolution (typically 300 for publication)
+    fig.width: 6.5   # figure width
+    fig.height: 4.0  # figure height
+    R.options:
+      digits: 3      # round to three digits

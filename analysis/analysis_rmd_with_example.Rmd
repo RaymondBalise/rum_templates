@@ -5,27 +5,12 @@ date: "`r Sys.Date()`"
 output:
   bookdown::html_document2:
     number_sections: false
-bibliography: [references.bib, packages.bib]
-csl: the-new-england-journal-of-medicine.csl
+bibliography: [bib/references.bib, bib/packages.bib]
+csl: bib/apa.csl # keep the bib/ prefix (e.g., bib/mla.csl)
+template-version: 1
 ---
 
-```{r setup, echo=FALSE}
-knitr::opts_chunk$set(
-                      ########## set global options ############
-    echo = FALSE,     # don't show code
-    collapse = TRUE,  # keep code from blocks together (if shown)
-    message = TRUE,   # show messages
-    warning = TRUE,   # show warnings
-    error = TRUE,     # show error messages
-    comment = "",     # don't show ## with printed output
-    dpi = 100,        # image resolution (typically 300 for publication)
-    fig.width = 6.5,  # figure width
-    fig.height = 4.0  # figure height
-)
-
-# R's default rounding is to show 7 digits. This rounds results to 3 digits.
-options(digits = 3)
-```
+{{knitr_opts}}
 
 ```{r tidyverse-tidymodels, echo=FALSE}
 library(conflicted)
@@ -38,27 +23,30 @@ options(dplyr.summarise.inform = FALSE)
 ```
 
 ```{r other-packages}
-library(glue)  # for glue()
-library(rUM)  # needed for the bibliography to include the package
-library(rio)  # for import() 
+if (requireNamespace("arrow", quietly = TRUE)) {
+  suppressPackageStartupMessages(library(arrow)) # for arrow/parquet I/O
+}
+library(glue) # for glue()
+library(rUM) # needed for the bibliography to include the package
+library(rio) # for import()
 
 # gtsummary for tbl_summary(), add_n(), add_p(), modify_header(), bold_labels()
-suppressPackageStartupMessages(library(gtsummary)) 
+suppressPackageStartupMessages(library(gtsummary))
 ```
 
 ```{r load-data}
-# If you want to import a dataset which is not an R file, put its name inside 
-# the "" below.  For example:
+# If you want to import a dataset which is not an R file, put its name inside
+# the "" below. For example:
 # raw_data <- import("the_excel.xlsx")
 
-# If your datasets is an Excel file saved in the data folder, add a path like:
+# If your dataset is an Excel file saved in the data folder, add a path like:
 # raw_data <- import("data/the_excel.xlsx")
 ```
 
 ```{r make-analysis}
 # preprocess your data and ultimately make a dataset called analysis
-analysis <- mtcars |> 
-  mutate(auto_man = if_else(am == 0, "Automatic", "Manual")) |> 
+analysis <- mtcars |>
+  mutate(auto_man = if_else(am == 0, "Automatic", "Manual")) |>
   select(mpg, auto_man)
 ```
 
@@ -67,42 +55,48 @@ analysis <- mtcars |>
 # Introduction
 
 # Methods
-Analyses were conducted with `r stringr::word(R.Version()$version.string, 1, 3)` with the `tidyverse` (`r packageVersion("tidyverse")`), `rUM` (`r packageVersion("rUM")`), `gtsummary` (`r packageVersion("gtsummary")`) packages used to preprocess and summarize data. [@R-base; @R-tidyverse; @tidyverse2019; @R-rUM; @R-gtsummary]
+Analyses were conducted with `r stringr::word(R.Version()$version.string, 1, 3)`
+with the `tidyverse` (`r packageVersion("tidyverse")`), `rUM`
+(`r packageVersion("rUM")`), and `gtsummary` (`r packageVersion("gtsummary")`)
+packages used to preprocess and summarize data.
+[@R-base; @R-tidyverse; @tidyverse2019; @R-rUM; @R-gtsummary]
 
 # Results
 
 ```{r table-1}
-# To learn how to use tbl_summary look https://www.danieldsjoberg.com/gtsummary/
-analysis |> 
+# Learn more about tbl_summary: https://www.danieldsjoberg.com/gtsummary/
+analysis |>
   tbl_summary(
     include = c(everything()), # choose your variables here
-    # change auto_man to the name of your column variable or delete by = auto_man
+    # change auto_man to your column variable or delete by = auto_man
     by = auto_man, # split table by group
     missing = "no" # don't list missing data separately
   ) |>
   # add_n() |> # add column with total number of non-missing observations
   # add_p() |> # test for a difference between groups
   modify_header(label = "") |> # update the column header to be blank
-  bold_labels() |> 
+  bold_labels() |>
   modify_caption(
     "Cross references to tables start with tab: then the code chunk label."
-  ) 
+  )
 ```
 
 As can be seen in Table \@ref(tab:table-1) or [Table 1](#tab:table-1)
 
 ```{r figure1}
-#| fig.cap: "Your real caption belongs here.  Remember figure references begin with #fig:"
+#| fig.cap: >
+#|   Your real caption belongs here. Remember figure references use
+#|   fig: plus the chunk label (avoid underscores in chunk labels).
 
-# To learn how to use ggplot start here: https://ggplot2.tidyverse.org/#learning-ggplot2
-analysis |> 
+# To learn ggplot2: https://ggplot2.tidyverse.org/#learning-ggplot2
+analysis |>
   ggplot() +
-		labs(
-			title = "Your short title goes here.",
-			caption = "Your data sources/citation goes here."
-		) +
-		geom_blank()
-		# remove geom_blank() and add details here
+  labs(
+    title = "Your short title goes here.",
+    caption = "Your data sources/citation goes here."
+  ) +
+  geom_blank()
+# remove geom_blank() and add details here
 ```
 
 See Figure \@ref(fig:figure1) or [Figure 1](#fig:figure1)
@@ -114,11 +108,17 @@ See Figure \@ref(fig:figure1) or [Figure 1](#fig:figure1)
 
 ```{r make-references, include=FALSE}
 # automatically create a bib database for loaded R packages & rUM
-knitr::write_bib(
-  c(
-    .packages(),
-    "rUM"
-  ),
-  "packages.bib"
-)
+bib_pkgs <- c(.packages(), "rUM")
+if (file.exists("bib/packages.bib")) {
+  old_pkgs <- stringr::str_match(
+    readLines("bib/packages.bib", warn = FALSE),
+    "^@Manual[{]R-([^,]+),"
+  )[, 2]
+  old_pkgs <- stats::na.omit(old_pkgs)
+  old_pkgs <- old_pkgs[
+    vapply(old_pkgs, requireNamespace, logical(1), quietly = TRUE)
+  ]
+  bib_pkgs <- unique(c(bib_pkgs, old_pkgs))
+}
+knitr::write_bib(bib_pkgs, "bib/packages.bib")
 ```

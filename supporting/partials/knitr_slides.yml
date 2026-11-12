@@ -1,0 +1,10 @@
+knitr:
+  opts_chunk:      ########## set global options ############
+    collapse: true # keep code from blocks together (if shown)
+    echo: false    # don't show code
+    message: true  # show messages
+    warning: true  # show warnings
+    error: true    # show error messages
+    comment: ""    # don't show ## with printed output
+    R.options:
+      digits: 3    # round to three digits
